@@ -7,6 +7,8 @@
 #include "test_mpi.h"
 #include "mpi_util.h"
 
+#include <stdio.h>
+
 TestAllreduce::TestAllreduce(ucc_test_team_t &_team, TestCaseParams &params) :
     TestCase(_team, UCC_COLL_TYPE_ALLREDUCE, params)
 {
@@ -69,6 +71,21 @@ ucc_status_t TestAllreduce::set_input(int iter_persistent)
     return UCC_OK;
 }
 
+
+void print_hex_buffer(const char *tag, void *buf, size_t len, int max_columns) {
+    unsigned char *byte_buf = (unsigned char *)buf;
+    printf("%s:", tag); // Print the tag followed by a newline
+    for (size_t i = 0; i < len; i++) {
+        printf("%02x ", byte_buf[i]);
+        if ((i + 1) % max_columns == 0) {
+            printf("\n");
+        }
+    }
+    if (len % max_columns != 0) {
+        printf("\n"); // Ensure printing a newline at the end if not exactly aligned with max_columns
+    }
+}
+
 ucc_status_t TestAllreduce::check()
 {
     size_t       dt_size = ucc_dt_size(dt);
@@ -91,6 +108,9 @@ ucc_status_t TestAllreduce::check()
             return status;
         }
     }
+
+    print_hex_buffer("rbuf", rbuf, msgsize, 40);
+    print_hex_buffer("check_buf", check_buf, msgsize, 40);
 
     return compare_buffers(rbuf, check_buf, count, dt, mem_type);
 }

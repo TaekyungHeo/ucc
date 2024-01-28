@@ -12,6 +12,7 @@
 #include "utils/ucc_math.h"
 #include "utils/ucc_coll_utils.h"
 #include "components/mc/ucc_mc.h"
+#include <stdio.h>
 
 static ucc_rank_t ucc_tl_ucp_allgather_ring_get_send_block(ucc_subset_t *subset,
                                                            ucc_rank_t trank,
@@ -49,6 +50,7 @@ void ucc_tl_ucp_allgather_ring_progress(ucc_coll_task_t *coll_task)
     }
     sendto   = ucc_ep_map_eval(task->subset.map, (trank + 1) % tsize);
     recvfrom = ucc_ep_map_eval(task->subset.map, (trank - 1 + tsize) % tsize);
+    printf("%s,rank=%d,task=%p\n", __func__, task->subset.myrank, (void *)task);
 
     while (task->tagged.send_posted < tsize - 1) {
         step = task->tagged.send_posted;
@@ -92,6 +94,7 @@ ucc_status_t ucc_tl_ucp_allgather_ring_start(ucc_coll_task_t *coll_task)
 
     UCC_TL_UCP_PROFILE_REQUEST_EVENT(coll_task, "ucp_allgather_ring_start", 0);
     ucc_tl_ucp_task_reset(task, UCC_INPROGRESS);
+    printf("%s,rank=%d,task=%p\n", __func__, task->subset.myrank, (void *)task);
 
     if (!UCC_IS_INPLACE(TASK_ARGS(task))) {
         block = task->allgather_ring.get_send_block(&task->subset, trank, tsize,
@@ -140,6 +143,7 @@ ucc_status_t ucc_tl_ucp_allgather_ring_init(ucc_base_coll_args_t *coll_args,
     ucc_status_t status;
 
     task = ucc_tl_ucp_init_task(coll_args, team);
+    printf("%s,rank=%d,task=%p\n", __func__, task->subset.myrank, (void *)task);
     status = ucc_tl_ucp_allgather_ring_init_common(task);
     if (status != UCC_OK) {
         ucc_tl_ucp_put_task(task);

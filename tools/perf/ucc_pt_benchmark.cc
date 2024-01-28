@@ -344,14 +344,10 @@ void ucc_pt_benchmark::print_header()
 void ucc_pt_benchmark::print_time(size_t count, ucc_pt_test_args_t args,
                                   double time)
 {
-    double time_us = time;
     size_t size    = count * ucc_dt_size(config.dt);
     int    gsize   = comm->get_size();
-    double time_avg, time_min, time_max;
+    double time_avg = 0, time_min = 0, time_max = 0;
 
-    comm->allreduce(&time_us, &time_min, 1, UCC_OP_MIN);
-    comm->allreduce(&time_us, &time_max, 1, UCC_OP_MAX);
-    comm->allreduce(&time_us, &time_avg, 1, UCC_OP_SUM);
     time_avg /= gsize;
 
     if (comm->get_rank() == 0) {
