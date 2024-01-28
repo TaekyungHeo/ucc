@@ -40,7 +40,8 @@ allreduce =                           \
 	allreduce/allreduce.c             \
 	allreduce/allreduce_knomial.c     \
 	allreduce/allreduce_sra_knomial.c \
-	allreduce/allreduce_dbt.c
+	allreduce/allreduce_dbt.c \
+	allreduce/allreduce_ring.c
 
 barrier =                     \
 	barrier/barrier.h         \
