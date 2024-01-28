@@ -122,6 +122,25 @@ typedef struct ucc_tl_ucp_task {
             ucc_ee_executor_t      *executor;
         } allreduce_kn;
         struct {
+            /*
+             * get send/recv block depends on subset type being used.
+             * For service allgather we need to get context endpoints but keep
+             * subset numbering.
+             * For regular allgather with rank reordering both endpoints
+             * and blocks permutation are necessary.
+             */
+            ucc_rank_t (*get_send_block)(ucc_subset_t *subset,
+                                         ucc_rank_t trank,
+                                         ucc_rank_t tsize,
+                                         int step);
+            ucc_rank_t (*get_recv_block)(ucc_subset_t *subset,
+                                         ucc_rank_t trank,
+                                         ucc_rank_t tsize,
+                                         int step);
+            ucc_ee_executor_task_t *etask;
+            ucc_ee_executor_t      *executor;
+        } allreduce_ring;
+        struct {
             int                     phase;
             ucc_knomial_pattern_t   p;
             void                   *scratch;
