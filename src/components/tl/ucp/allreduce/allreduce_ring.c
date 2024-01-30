@@ -99,7 +99,7 @@ void ucc_tl_ucp_allreduce_ring_progress(ucc_coll_task_t *coll_task)
         printf("%s,rank=%d,", __func__, task->subset.myrank);
         print_hex_buffer("after_recv_nb,rblock", buf, data_size, 40);
 
-        if (args->op == UC_OP_SUM) {
+        if (args->op == UCC_OP_SUM) {
           printf("SUM\n");
         } else if {
           printf("SOMETHING ELSE\n");
