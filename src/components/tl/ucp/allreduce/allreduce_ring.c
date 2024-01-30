@@ -101,7 +101,7 @@ void ucc_tl_ucp_allreduce_ring_progress(ucc_coll_task_t *coll_task)
 
         if (args->op == UCC_OP_SUM) {
           printf("SUM\n");
-        } else if {
+        } else {
           printf("SOMETHING ELSE\n");
         }
 
