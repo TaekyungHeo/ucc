@@ -48,6 +48,8 @@ void print_hex_buffer(const char *tag, void *buf, size_t len, int max_columns) {
 void ucc_tl_ucp_allreduce_ring_progress(ucc_coll_task_t *coll_task)
 {
     ucc_tl_ucp_task_t *task       = ucc_derived_of(coll_task, ucc_tl_ucp_task_t);
+    ucc_coll_args_t   *args       = &TASK_ARGS(task);
+//    ucc_rank_t         size       = task->subset.map.ep_num;
     ucc_tl_ucp_team_t *team       = TASK_TEAM(task);
     ucc_rank_t         trank      = task->subset.myrank;
     ucc_rank_t         tsize      = (ucc_rank_t)task->subset.map.ep_num;
@@ -59,6 +61,7 @@ void ucc_tl_ucp_allreduce_ring_progress(ucc_coll_task_t *coll_task)
     ucc_rank_t         sendto, recvfrom, sblock, rblock;
     int                step;
     void              *buf;
+//    int    is_avg;
 
     if (UCC_INPROGRESS == ucc_tl_ucp_test(task)) {
         return;
@@ -95,6 +98,28 @@ void ucc_tl_ucp_allreduce_ring_progress(ucc_coll_task_t *coll_task)
             task, out);
         printf("%s,rank=%d,", __func__, task->subset.myrank);
         print_hex_buffer("after_recv_nb,rblock", buf, data_size, 40);
+
+        if (args->op == UC_OP_SUM) {
+          printf("SUM\n");
+        } else if {
+          printf("SOMETHING ELSE\n");
+        }
+
+//       is_avg = (args->op == UCC_OP_AVG) &&
+//                 (task->tagged.recv_completed == (size - 1));
+//        if (UCC_OK !=
+//            (status = ucc_dt_reduce(
+//                 r_scratch,
+//                 PTR_OFFSET(sbuf, (block_offset + frag_offset) * dt_size),
+//                 reduce_target, frag_count, dt, args,
+//                 is_avg ? UCC_EEE_TASK_FLAG_REDUCE_WITH_ALPHA : 0,
+//                 AVG_ALPHA(task), task->reduce_scatter_ring.executor,
+//                 &task->reduce_scatter_ring.etask))) {
+//            tl_error(UCC_TASK_LIB(task), "failed to perform dt reduction");
+//            task->super.status = status;
+//            return;
+//        }
+
         if (UCC_INPROGRESS == ucc_tl_ucp_test(task)) {
             return;
         }
